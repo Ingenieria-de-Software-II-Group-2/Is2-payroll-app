@@ -1,0 +1,105 @@
+# ---------------------------------------------------------------------
+# 1. Node.js / npm / yarn
+# ---------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.npm
+.yarn-integrity
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# ---------------------------------------------------------------------
+# 2. Next.js (build, cache, logs)
+# ---------------------------------------------------------------------
+.next/
+out/
+build/
+dist/
+coverage/
+*.lcov
+.nyc_output
+.cache
+.parcel-cache
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# ---------------------------------------------------------------------
+# 3. Prisma (opcional: puedes versionar migraciones más adelante)
+# ---------------------------------------------------------------------
+# Descomenta si NO quieres versionar las migraciones de Prisma
+# prisma/migrations/
+
+# ---------------------------------------------------------------------
+# 4. Variables de entorno (¡CRÍTICO!)
+# ---------------------------------------------------------------------
+.env
+.env.local
+.env.development
+.env.production
+*.env
+!.env.example  # ✅ Permite subir .env.example como plantilla
+
+# ---------------------------------------------------------------------
+# 5. IDE y editores
+# ---------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.vscode/
+.idea/
+.temp
+.cache
+.svelte-kit/
+.firebase/
+.tern-port
+.vscode-test
+
+# ---------------------------------------------------------------------
+# 6. Sistema operativo y otros
+# ---------------------------------------------------------------------
+logs
+*.log
+pids
+*.pid
+*.seed
+*.pid.lock
+lib-cov
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+$RECYCLE.BIN/
+*.stackdump
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# ---------------------------------------------------------------------
+# 7. Herramientas específicas (opcional)
+# ---------------------------------------------------------------------
+.grunt
+bower_components
+.lock-wscript
+build/Release
+jspm_packages/
+web_modules/
+.nuxt
+.docusaurus
+.serverless/
+.fusebox/
+.dynamodb/
