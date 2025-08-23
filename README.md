@@ -15,10 +15,10 @@ Permite gestionar empleados, cargos, conceptos salariales, hijos/dependientes, c
 - Control de historial de cargos y nómina.
 
 ## Tecnologías
-- Backend: PostgreSQL (Base de datos)
-- Frontend: Por definir (React / Next.js / otro)
-- Control de versiones: GitHub
-- Gestión de tareas: Jira
+- **Frontend**: Next.js desplegado en Vercel, con navegación web y consumo de APIs RESTful.
+- **Backend**: Serverless API Routes en Vercel, con middleware JWT + ROL para validación de acceso.
+- **ORM**: Prisma para comunicación segura con PostgreSQL.
+- **Base de Datos**: PostgreSQL con conexión SSL.
 
 ## Estado del proyecto
 - Proyecto en desarrollo siguiendo metodología ágil Scrum.
