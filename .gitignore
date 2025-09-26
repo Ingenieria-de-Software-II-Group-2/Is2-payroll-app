@@ -103,3 +103,4 @@ web_modules/
 .serverless/
 .fusebox/
 .dynamodb/
+/app/generated/prisma
