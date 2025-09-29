@@ -13,5 +13,5 @@ npx prisma migrate dev --name init
 # aplicar migraciones en producción / CI
 npx prisma migrate deploy
 
-# generar client (si no se generó)
+# generar client (si no se generó)(este comando debo ejecutar siempre si cambio de pc porque esta en el git ignore y no se sincroniza)
 npx prisma generate
