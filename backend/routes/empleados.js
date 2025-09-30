@@ -4,16 +4,24 @@ const { authorizeByPermission, authorizeByRole } = require("../middleware/author
 const { PERMISSIONS, ROLES } = require("../auth/roles");
 const prisma = require("../prisma");
 
-// Lista
+// GET: lista de empleados
 router.get("/", authorizeByPermission(PERMISSIONS.EMPLEADO_READ_ALL), async (req, res) => {
   const empleados = await prisma.empleado.findMany({
     orderBy: { id_empleado: "asc" },
-    select: { id_empleado: true, nombre: true, apellido: true, cedula: true, correo: true, telefono: true, fecha_ingreso: true }
+    select: {
+      id_empleado: true,
+      nombre: true,
+      apellido: true,
+      cedula: true,
+      correo: true,
+      telefono: true,
+      fecha_ingreso: true,
+    },
   });
   res.json({ ok: true, empleados });
 });
 
-// Detalle
+// GET: detalle de empleado
 router.get("/:id", authorizeByPermission(PERMISSIONS.EMPLEADO_READ_ALL), async (req, res) => {
   const id = Number(req.params.id);
   const empleado = await prisma.empleado.findUnique({ where: { id_empleado: id } });
@@ -21,21 +29,31 @@ router.get("/:id", authorizeByPermission(PERMISSIONS.EMPLEADO_READ_ALL), async (
   res.json({ ok: true, empleado });
 });
 
-// Crear
+// POST: crear empleado
 router.post("/", authorizeByPermission(PERMISSIONS.EMPLEADO_CREATE), async (req, res) => {
-  const { nombre, apellido, cedula, correo, telefono, direccion, fecha_nacimiento, fecha_ingreso, afiliado_IPS, id_estado_civil } = req.body;
-  const nuevo = await prisma.empleado.create({
-    data: {
-      nombre, apellido, cedula, correo, telefono, direccion,
-      fecha_nacimiento: new Date(fecha_nacimiento),
-      fecha_ingreso: new Date(fecha_ingreso),
-      afiliado_IPS, id_estado_civil
-    }
-  });
-  res.status(201).json({ ok: true, empleado: nuevo });
+  try {
+    const { nombre, apellido, cedula, correo, telefono, direccion, fecha_nacimiento, fecha_ingreso, afiliado_IPS, id_estado_civil } = req.body;
+    const nuevo = await prisma.empleado.create({
+      data: {
+        nombre,
+        apellido,
+        cedula,
+        correo,
+        telefono,
+        direccion,
+        fecha_nacimiento: new Date(fecha_nacimiento),
+        fecha_ingreso: new Date(fecha_ingreso),
+        afiliado_IPS,
+        id_estado_civil,
+      },
+    });
+    res.status(201).json({ ok: true, empleado: nuevo });
+  } catch (e) {
+    res.status(400).json({ error: "Error creando empleado", details: e.message });
+  }
 });
 
-// Actualizar
+// PUT: actualizar empleado
 router.put("/:id", authorizeByPermission(PERMISSIONS.EMPLEADO_UPDATE), async (req, res) => {
   const id = Number(req.params.id);
   try {
@@ -44,15 +62,14 @@ router.put("/:id", authorizeByPermission(PERMISSIONS.EMPLEADO_UPDATE), async (re
       data: {
         nombre: req.body.nombre,
         apellido: req.body.apellido,
-        cedula: req.body.cedula,
         correo: req.body.correo,
         telefono: req.body.telefono,
         direccion: req.body.direccion,
         fecha_nacimiento: req.body.fecha_nacimiento ? new Date(req.body.fecha_nacimiento) : undefined,
         fecha_ingreso: req.body.fecha_ingreso ? new Date(req.body.fecha_ingreso) : undefined,
         afiliado_IPS: req.body.afiliado_IPS,
-        id_estado_civil: req.body.id_estado_civil
-      }
+        id_estado_civil: req.body.id_estado_civil,
+      },
     });
     res.json({ ok: true, empleado: actualizado });
   } catch {
@@ -60,7 +77,7 @@ router.put("/:id", authorizeByPermission(PERMISSIONS.EMPLEADO_UPDATE), async (re
   }
 });
 
-// Borrar (solo ADMIN)
+// DELETE: eliminar empleado (solo ADMIN)
 router.delete("/:id", authorizeByRole(ROLES.ADMIN), async (req, res) => {
   const id = Number(req.params.id);
   try {
@@ -71,4 +88,4 @@ router.delete("/:id", authorizeByRole(ROLES.ADMIN), async (req, res) => {
   }
 });
 
-module.exports = router; // <-- IMPORTANTE
+module.exports = router;
