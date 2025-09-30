@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const { ROLES } = require("./auth/roles");
@@ -28,5 +29,7 @@ app.listen(PORT, () => console.log(`API escuchando en http://localhost:${PORT}`)
 
 const meRoutes = require("./routes/me");
 app.use("/api/me", meRoutes);
+
+
 
 

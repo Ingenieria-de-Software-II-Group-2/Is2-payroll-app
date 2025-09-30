@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model cargo {
+  id_cargo              Int                @id @default(autoincrement())
+  nombre_cargo          String             @db.VarChar(50)
+
+  // Renombramos el campo de texto para que no choque con la relación
+  departamento_nombre   String             @map("departamento") @db.VarChar(50)
+
+  id_departamento       Int
+  Activo                Boolean
+  id_categoria_salarial Int
+
+  categoria_salarial    categoria_salarial @relation(fields: [id_categoria_salarial], references: [id_categoria_salarial])
+
+  // Mantenemos la relación con otro nombre (claro y distinto)
+  departamento_ref      departamento       @relation(fields: [id_departamento], references: [id_departamento])
+
+  historial_cargo       historial_cargo[]
+}
+
+
+model categoria_salarial {
+  id_categoria_salarial Int     @id @default(autoincrement())
+  monto                 Int
+  cargo                 cargo[]
+}
+
+model concepto_empleado {
+  id_concepto_empleado Int               @id @default(autoincrement())
+  monto                Decimal           @db.Decimal(12, 2)
+  id_empleado          Int
+  observacion          String            @db.VarChar(255)
+  activo               Boolean
+  id_concepto          Int
+  concepto_salarial    concepto_salarial @relation(fields: [id_concepto], references: [id_concepto])
+  empleado             empleado          @relation(fields: [id_empleado], references: [id_empleado])
+}
+
+model concepto_salarial {
+  id_concepto             Int                       @id @default(autoincrement())
+  nombre                  String                    @db.VarChar(50)
+  recurrente              Boolean
+  afecta_IPS              Boolean
+  afecta_aguinaldo        Boolean
+  id_concepto_salarial    Int
+  concepto_empleado       concepto_empleado[]
+  tipo_concepto_salarial  tipo_concepto_salarial    @relation(fields: [id_concepto_salarial], references: [id_concepto_salarial])
+  detalle_nomina_concepto detalle_nomina_concepto[]
+}
+
+model departamento {
+  id_departamento Int     @id @default(autoincrement())
+  nombre          String  @db.VarChar(50)
+  ubicacion       String  @db.VarChar(100)
+  cargo           cargo[]
+}
+
+model detalle_nomina {
+  id_detalle              Int                       @id @default(autoincrement())
+  total_descuentos        Decimal                   @db.Decimal(12, 2)
+  total_bonificaciones    Decimal                   @db.Decimal(12, 2)
+  neto_a_cobrar           Int
+  creado_por              Int
+  id_nomina               Int
+  id_empleado             Int
+  usuario                 usuario                   @relation(fields: [creado_por], references: [id_usuario])
+  empleado                empleado                  @relation(fields: [id_empleado], references: [id_empleado])
+  nomina                  nomina                    @relation(fields: [id_nomina], references: [id_nomina])
+  detalle_nomina_concepto detalle_nomina_concepto[]
+}
+
+model detalle_nomina_concepto {
+  id_detalle_conceptos Int               @id
+  monto                Decimal           @db.Decimal(12, 2)
+  id_concepto          Int
+  id_detalle           Int
+  origen               String            @db.VarChar(10)
+  concepto_salarial    concepto_salarial @relation(fields: [id_concepto], references: [id_concepto])
+  detalle_nomina       detalle_nomina    @relation(fields: [id_detalle], references: [id_detalle])
+}
+
+model empleado {
+  id_empleado       Int                 @id @default(autoincrement())
+  nombre            String              @db.VarChar(50)
+  cedula            String              @db.VarChar(15)
+  apellido          String              @db.VarChar(50)
+  fecha_nacimiento  DateTime            @db.Date
+  correo            String              @db.VarChar(50)
+  fecha_ingreso     DateTime            @db.Date
+  telefono          String              @db.VarChar(13)
+  fecha_egreso      DateTime?           @db.Date
+  direccion         String              @db.VarChar(100)
+  afiliado_IPS      Boolean
+  id_estado_civil   Int
+  concepto_empleado concepto_empleado[]
+  detalle_nomina    detalle_nomina[]
+  estado_civil      estado_civil        @relation(fields: [id_estado_civil], references: [id_estado])
+  hijo              hijo[]
+  historial_cargo   historial_cargo[]
+  usuario           usuario?
+}
+
+model estado_civil {
+  id_estado   Int        @id @default(autoincrement())
+  descripcion String     @db.VarChar(20)
+  empleado    empleado[]
+}
+
+model hijo {
+  id_hijo                       Int      @id @default(autoincrement())
+  nombre                        String   @db.VarChar(50)
+  certificado_vida_residencia   String
+  fecha_vencimiento_certificado DateTime @db.Date
+  id_empleado                   Int
+  discapacidad                  Boolean
+  fecha_nacimiento              DateTime @db.Date
+  certificado_nacimiento        String
+  empleado                      empleado @relation(fields: [id_empleado], references: [id_empleado])
+}
+
+model historial_cargo {
+  id_historial     Int       @id @default(autoincrement())
+  id_empleado      Int
+  Fecha_Inicio     DateTime  @db.Date
+  fecha_fin        DateTime? @db.Date
+  Salario_Asignado Int
+  id_cargo         Int
+  cargo            cargo     @relation(fields: [id_cargo], references: [id_cargo])
+  empleado         empleado  @relation(fields: [id_empleado], references: [id_empleado])
+}
+
+model nomina {
+  id_nomina        Int              @id @default(autoincrement())
+  anho             Int
+  fecha_generacion DateTime         @db.Date
+  estado           String           @db.VarChar(20)
+  mes              Int
+  detalle_nomina   detalle_nomina[]
+}
+
+model registro_acceso {
+  id_registro Int      @id @default(autoincrement())
+  id_usuario  Int
+  ip_origen   String   @db.VarChar(15)
+  accion      String   @db.VarChar(255)
+  fecha_hora  DateTime
+  usuario     usuario  @relation(fields: [id_usuario], references: [id_usuario])
+}
+
+model rol_usuario {
+  id_rol_usuario  Int       @id @default(autoincrement())
+  nombre          String    @db.VarChar(50)
+  descripcion_rol String    @db.VarChar(50)
+  usuario         usuario[]
+}
+
+model tipo_concepto_salarial {
+  id_concepto_salarial Int                 @id @default(autoincrement())
+  descripcion          String              @db.VarChar(255)
+  concepto_salarial    concepto_salarial[]
+}
+
+model usuario {
+  id_usuario      Int               @id @default(autoincrement())
+  nombre_usuario  String            @db.VarChar(50)
+  estado          Boolean
+  clave           String            @db.VarChar(255)
+  id_rol_usuario  Int
+  id_empleado     Int               @unique
+  detalle_nomina  detalle_nomina[]
+  registro_acceso registro_acceso[]
+  empleado        empleado          @relation(fields: [id_empleado], references: [id_empleado])
+  rol_usuario     rol_usuario       @relation(fields: [id_rol_usuario], references: [id_rol_usuario])
+}
