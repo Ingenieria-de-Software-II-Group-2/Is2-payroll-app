@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------
-# 1. Node.js / npm / yarn
+# 1. Node.js / npm / yarn.
 # ---------------------------------------------------------------------
 node_modules/
 npm-debug.log*
@@ -103,3 +103,4 @@ web_modules/
 .serverless/
 .fusebox/
 .dynamodb/
+/app/generated/prisma
