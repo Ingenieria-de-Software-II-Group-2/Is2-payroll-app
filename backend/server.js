@@ -12,9 +12,9 @@ app.use(express.json());
 
 // Simular usuario logueado (cambiá el rol acá para probar)
 //app.use(mockUser(ROLES.ASISTENTE_RRHH));
-app.use(mockUser(ROLES.ADMIN));
+//app.use(mockUser(ROLES.ADMIN));
 // app.use(mockUser(ROLES.GERENTE_RRHH));
-// app.use(mockUser(ROLES.EMPLEADO));
+ app.use(mockUser(ROLES.EMPLEADO));
 
 // Prefijos de API
 app.use("/api/empleados", empleadosRoutes);
@@ -26,5 +26,7 @@ app.get("/health", (_req, res) => res.json({ status: "ok" }));
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`API escuchando en http://localhost:${PORT}`));
 
+const meRoutes = require("./routes/me");
+app.use("/api/me", meRoutes);
 
 
