@@ -1,0 +1,123 @@
+@base = http://localhost:4000
+
+### Healthcheck
+GET {{base}}/health
+
+############################################################
+### PRUEBAS CON ADMIN
+# En server.js: app.use(mockUser(ROLES.ADMIN));
+############################################################
+
+### Admin: LISTAR empleados (200)
+GET {{base}}/api/empleados
+
+### Admin: CREAR empleado (201/200)
+POST {{base}}/api/empleados
+Content-Type: application/json
+
+{
+  "nombre": "Juan Admin",
+  "cargo": "Analista",
+  "salario": 3500000
+}
+
+### Admin: EDITAR empleado (200)  <-- cambia :id según tu implementación
+PUT {{base}}/api/empleados/1
+Content-Type: application/json
+
+{
+  "cargo": "Sr Analista"
+}
+
+### Admin: ELIMINAR empleado (200/204)
+DELETE {{base}}/api/empleados/1
+
+
+############################################################
+### PRUEBAS CON ASISTENTE RRHH
+# En server.js: app.use(mockUser(ROLES.ASISTENTE_RRHH));
+############################################################
+
+### Asistente: LISTAR (200)
+GET {{base}}/api/empleados
+
+### Asistente: CREAR (200/201 si permitido; de lo contrario 403)
+POST {{base}}/api/empleados
+Content-Type: application/json
+
+{
+  "nombre": "María Asistente",
+  "cargo": "Auxiliar",
+  "salario": 2800000
+}
+
+### Asistente: EDITAR (200 si permitido; si no 403)
+PUT {{base}}/api/empleados/2
+Content-Type: application/json
+
+{
+  "cargo": "Auxiliar Sr"
+}
+
+### Asistente: ELIMINAR (403 esperado si no tiene permiso)
+DELETE {{base}}/api/empleados/2
+
+
+############################################################
+### PRUEBAS CON GERENTE RRHH
+# En server.js: app.use(mockUser(ROLES.GERENTE_RRHH));
+############################################################
+
+### Gerente: LISTAR (200)
+GET {{base}}/api/empleados
+
+### Gerente: CREAR (403 o 201 según tu política)
+POST {{base}}/api/empleados
+Content-Type: application/json
+
+{
+  "nombre": "Pedro Gerente",
+  "cargo": "Gerente",
+  "salario": 6000000
+}
+
+### Gerente: EDITAR (200 o 403 según reglas)
+PUT {{base}}/api/empleados/3
+Content-Type: application/json
+
+{
+  "cargo": "Gerente Sr"
+}
+
+### Gerente: ELIMINAR (403 si no permitido)
+DELETE {{base}}/api/empleados/3
+
+
+############################################################
+### PRUEBAS CON EMPLEADO
+# En server.js: app.use(mockUser(ROLES.EMPLEADO));
+############################################################
+
+### Empleado: LISTAR (200 o 403 según tu política)
+GET {{base}}/api/empleados
+
+### Empleado: CREAR (403 esperado)
+POST {{base}}/api/empleados
+Content-Type: application/json
+
+{
+  "nombre": "Empleado X",
+  "cargo": "Operativo",
+  "salario": 2500000
+}
+
+### Empleado: EDITAR (403 esperado)
+PUT {{base}}/api/empleados/4
+Content-Type: application/json
+
+{
+  "cargo": "Operativo Sr"
+}
+
+### Empleado: ELIMINAR (403 esperado)
+DELETE {{base}}/api/empleados/4
