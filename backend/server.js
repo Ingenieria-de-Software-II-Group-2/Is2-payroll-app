@@ -12,9 +12,9 @@ app.use(express.json());
 
 // Simular usuario logueado (cambiá el rol acá para probar)
 //app.use(mockUser(ROLES.ASISTENTE_RRHH));
-//app.use(mockUser(ROLES.ADMIN));
+app.use(mockUser(ROLES.ADMIN));
 //app.use(mockUser(ROLES.GERENTE_RRHH));
- app.use(mockUser(ROLES.EMPLEADO));
+//app.use(mockUser(ROLES.EMPLEADO));
 
 // Prefijos de API
 app.use("/api/empleados", empleadosRoutes);
